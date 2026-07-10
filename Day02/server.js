@@ -1,20 +1,37 @@
 const express = require('express');
-const mockData = require('./data'); // Importing our data file
-
 const app = express();
 const PORT = 3000;
 
-// This is a GET Route. When the browser visits '/', it sends a message.
-app.get('/', (request, response) => {
-    response.send("Hello! My Node.js server is running!");
+// 1. MIDDLEWARE: This tells our server how to unpack JSON data sent in a POST request.
+// (This is the Express HTTP Pipeline at work!)
+app.use(express.json());
+
+// 2. MOCK DATABASE: A simple array stored in the server's memory.
+let books = [
+{ id: 1, title: "Harry Potter" },
+{ id: 2, title: "Lord of the Rings" }
+];
+
+// 3. GET ROUTE: Read the data
+app.get('/api/books', (req, res) =>{
+  res.json(books) ;
+
 });
 
-// This is an API Route. It returns our mock data as JSON.
-app.get('/api/users', (request, response) => {
-    response.json(mockData);
+// 4. POST ROUTE: Create new data
+app.post('/api/books', (req, res) => {
+  // req.body contains the unpacked JSON data sent by the user
+  const newBook = req.body;
+
+  // Add the new book to our array
+  books. push (newBook) ;
+
+  // Send a success message back to the client
+  res.send("Book added successfully!");
+
 });
 
-// This tells the server to start listening on port 3000
-app.listen(PORT, () => {
-    console.log(`Server is listening on http://localhost:${PORT}`);
+app. listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+
 });
